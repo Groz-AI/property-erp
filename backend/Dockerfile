@@ -4,7 +4,7 @@ COPY package*.json ./
 
 # Development stage
 FROM base AS development
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
 EXPOSE 3000
@@ -12,8 +12,8 @@ CMD ["node", "dist/main.js"]
 
 # Production builder
 FROM base AS builder
-RUN npm ci --only=production && cp -R node_modules /prod_modules
-RUN npm ci
+RUN npm ci --omit=dev --legacy-peer-deps && cp -R node_modules /prod_modules
+RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
 
