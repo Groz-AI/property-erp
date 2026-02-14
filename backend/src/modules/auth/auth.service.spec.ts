@@ -51,8 +51,9 @@ describe('AuthService', () => {
         return c[key] || defaultValue;
       }),
     };
+    const tenantRepo = { findOne: jest.fn().mockResolvedValue({ id: 'tenant-1', isActive: true }) };
 
-    service = new AuthService(userRepo as any, jwtService as any, configService as any);
+    service = new AuthService(userRepo as any, jwtService as any, configService as any, tenantRepo as any);
   });
 
   describe('login', () => {
