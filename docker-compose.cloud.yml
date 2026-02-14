@@ -23,7 +23,7 @@ services:
       resources:
         limits:
           memory: ${PG_MEM_LIMIT:-512M}
-          cpus: ${PG_CPU_LIMIT:-'0.50'}
+          cpus: "${PG_CPU_LIMIT:-0.50}"
     networks:
       - internal
 
@@ -42,7 +42,7 @@ services:
       resources:
         limits:
           memory: ${REDIS_MEM_LIMIT:-128M}
-          cpus: ${REDIS_CPU_LIMIT:-'0.25'}
+          cpus: "${REDIS_CPU_LIMIT:-0.25}"
     networks:
       - internal
 
@@ -64,7 +64,7 @@ services:
       resources:
         limits:
           memory: ${MINIO_MEM_LIMIT:-256M}
-          cpus: ${MINIO_CPU_LIMIT:-'0.25'}
+          cpus: "${MINIO_CPU_LIMIT:-0.25}"
     networks:
       - internal
 
@@ -112,7 +112,7 @@ services:
       resources:
         limits:
           memory: ${API_MEM_LIMIT:-512M}
-          cpus: ${API_CPU_LIMIT:-'0.50'}
+          cpus: "${API_CPU_LIMIT:-0.50}"
       replicas: ${API_REPLICAS:-1}
     networks:
       - internal
@@ -148,7 +148,7 @@ services:
       resources:
         limits:
           memory: ${WORKER_MEM_LIMIT:-256M}
-          cpus: ${WORKER_CPU_LIMIT:-'0.25'}
+          cpus: "${WORKER_CPU_LIMIT:-0.25}"
       replicas: ${WORKER_REPLICAS:-1}
     networks:
       - internal
@@ -182,7 +182,7 @@ services:
       resources:
         limits:
           memory: ${WEB_MEM_LIMIT:-128M}
-          cpus: ${WEB_CPU_LIMIT:-'0.25'}
+          cpus: "${WEB_CPU_LIMIT:-0.25}"
     networks:
       - internal
 
