@@ -39,7 +39,7 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left Branding Panel */}
-      <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950">
+      <div className="hidden xl:flex xl:w-[48%] relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950">
         {/* Animated orbs */}
         <div className="absolute inset-0">
           <div className="absolute top-[15%] left-[10%] w-72 h-72 rounded-full bg-blue-500/20 blur-[100px] animate-pulse-soft" />
@@ -52,7 +52,7 @@ export function LoginPage() {
           backgroundSize: '40px 40px',
         }} />
         {/* Content */}
-        <div className="relative z-10 flex flex-col justify-between p-12 xl:p-16 w-full">
+        <div className="relative z-10 flex flex-col justify-between p-10 2xl:p-16 w-full">
           <div>
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
@@ -113,8 +113,8 @@ export function LoginPage() {
         }} />
 
         <div className="relative z-10 w-full max-w-[400px] mx-6 sm:mx-auto animate-fade-in">
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-2.5 mb-10">
+          {/* Mobile / tablet logo */}
+          <div className="xl:hidden flex items-center gap-2.5 mb-10">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary">
               <Building2 className="h-5 w-5 text-white" />
             </div>
