@@ -141,6 +141,7 @@ export class InitialSchema1707600000000 implements MigrationInterface {
         domain VARCHAR(255),
         logo_url VARCHAR(500),
         is_active BOOLEAN NOT NULL DEFAULT TRUE,
+        max_users INT NOT NULL DEFAULT 10,
         settings JSONB DEFAULT '{}',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

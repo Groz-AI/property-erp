@@ -9,6 +9,7 @@ export interface CreateTenantDto {
   name: string;
   slug: string;
   domain?: string;
+  maxUsers?: number;
   adminEmail: string;
   adminPassword: string;
   adminFirstName: string;
@@ -119,6 +120,7 @@ export class PlatformService {
         name: dto.name,
         slug: dto.slug,
         domain: dto.domain || null,
+        maxUsers: dto.maxUsers || 10,
         isActive: true,
         settings: dto.settings || {},
       });

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -103,6 +103,17 @@ export class AuthService {
     });
     if (existing) {
       throw new ConflictException('Email already registered');
+    }
+
+    // Enforce tenant max_users limit
+    if (dto.tenantId) {
+      const tenant = await this.tenantRepo.findOne({ where: { id: dto.tenantId } });
+      if (tenant) {
+        const currentCount = await this.userRepo.count({ where: { tenantId: dto.tenantId } });
+        if (currentCount >= tenant.maxUsers) {
+          throw new ForbiddenException(`User limit reached. This organization allows a maximum of ${tenant.maxUsers} users.`);
+        }
+      }
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);

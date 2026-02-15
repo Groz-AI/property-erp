@@ -57,7 +57,7 @@ export function TenantDetailPage() {
         description={`${tenant.slug}${tenant.domain ? ` · ${tenant.domain}` : ''}`}
         actions={
           <div className="flex items-center gap-2">
-            <Link to="/platform/tenants" className="inline-flex items-center gap-1.5 rounded-xl border border-border/60 px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted transition-colors">
+            <Link to="/platform/tenants" className="btn-secondary text-xs">
               <ArrowLeft className="h-3 w-3" /> Back
             </Link>
             <button
@@ -79,39 +79,40 @@ export function TenantDetailPage() {
         {/* Tenant Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <StatCard title="Status" value={tenant.isActive ? 'Active' : 'Inactive'} icon={Building2} variant={tenant.isActive ? 'gradient' : undefined} />
-          <StatCard title="Users" value={tenant.usersCount} subtitle={`${tenant.activeUsersCount} active`} icon={Users} />
+          <StatCard title="Users" value={`${tenant.usersCount} / ${tenant.maxUsers || '∞'}`} subtitle={`${tenant.activeUsersCount} active`} icon={Users} />
           <StatCard title="Projects" value={tenant.projectsCount} icon={FileText} />
           <StatCard title="Units" value={tenant.unitsCount} icon={Home} />
-          <StatCard title="Revenue" value={`AED ${Number(tenant.revenue || 0).toLocaleString()}`} icon={DollarSign} />
+          <StatCard title="Revenue" value={`EGP ${Number(tenant.revenue || 0).toLocaleString()}`} icon={DollarSign} />
         </div>
 
         {/* Tenant Info */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-card rounded-2xl border border-border/60 shadow-soft p-5 space-y-3">
-            <h3 className="font-semibold text-sm">Tenant Details</h3>
+          <div className="bg-card rounded-2xl border border-border/50 shadow-soft p-5 space-y-4">
+            <h3 className="font-semibold text-[15px] tracking-tight">Tenant Details</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-muted-foreground">ID</span><span className="font-mono text-xs">{tenant.id}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Slug</span><span className="font-mono">{tenant.slug}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Domain</span><span>{tenant.domain || '—'}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Max Users</span><span className="font-semibold">{tenant.maxUsers || '∞'}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Created</span><span>{new Date(tenant.createdAt).toLocaleDateString()}</span></div>
             </div>
           </div>
 
           {/* Users Table */}
-          <div className="lg:col-span-2 bg-card rounded-2xl border border-border/60 shadow-soft overflow-hidden">
-            <div className="border-b border-border/40 px-5 py-4">
+          <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 shadow-soft overflow-hidden">
+            <div className="border-b border-border/30 px-5 py-4">
               <h3 className="font-semibold flex items-center gap-2 text-[15px]">
-                <Users className="h-4 w-4 text-rose-500" /> Users ({users.length})
+                <Users className="h-4 w-4 text-rose-500/70" /> Users ({users.length})
               </h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border/50 bg-muted/30">
-                    <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">User</th>
-                    <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Status</th>
-                    <th className="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Last Login</th>
-                    <th className="px-5 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Actions</th>
+                  <tr className="border-b border-border/40 bg-muted/20">
+                    <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">User</th>
+                    <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Status</th>
+                    <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Last Login</th>
+                    <th className="px-5 py-3.5 text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -119,7 +120,7 @@ export function TenantDetailPage() {
                     <tr><td colSpan={4} className="px-5 py-8 text-center text-muted-foreground">No users</td></tr>
                   ) : (
                     users.map((u: any) => (
-                      <tr key={u.id} className="border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors">
+                      <tr key={u.id} className="border-b border-border/25 last:border-0 hover:bg-primary/[0.02] transition-colors duration-150">
                         <td className="px-5 py-3">
                           <div className="font-medium">{u.firstName} {u.lastName}</div>
                           <div className="text-xs text-muted-foreground flex items-center gap-1"><Mail className="h-3 w-3" /> {u.email}</div>

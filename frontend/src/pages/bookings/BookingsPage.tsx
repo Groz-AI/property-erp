@@ -33,14 +33,14 @@ const columns: Column<Booking>[] = [
   { key: 'validUntil', header: 'Valid Until', className: 'text-xs text-muted-foreground' },
   { key: 'status', header: 'Status', render: (r) => <StatusBadge status={r.status} /> },
   { key: 'createdAt', header: 'Created', className: 'text-xs text-muted-foreground' },
-  { key: 'actions', header: '', sortable: false, render: (r: Booking) => (
-    <div className="flex items-center gap-1">
-      <button className="rounded p-1 hover:bg-muted transition-colors" title="View details">
-        <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+  { key: 'actions', header: '', sortable: false, className: 'w-10', render: (r: Booking) => (
+    <div className="flex items-center gap-0.5">
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="View details">
+        <Eye className="h-3.5 w-3.5 text-muted-foreground/60" />
       </button>
       {r.status === 'active' && (
-        <button className="rounded p-1 hover:bg-red-50 transition-colors cancel-btn" title="Cancel booking" data-id={r.id}>
-          <Ban className="h-3.5 w-3.5 text-red-500" />
+        <button className="rounded-lg p-1.5 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors cancel-btn" title="Cancel booking" data-id={r.id}>
+          <Ban className="h-3.5 w-3.5 text-red-500/70" />
         </button>
       )}
     </div>
@@ -81,7 +81,7 @@ export function BookingsPage() {
         title={t('bookings.title')}
         description={t('bookings.description')}
         actions={
-          <button onClick={() => setDialogOpen(true)} className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('bookings.add')}
           </button>
         }
@@ -109,10 +109,10 @@ export function BookingsPage() {
           </FormSelect>
         </FormField>
         <FormRow>
-          <FormField label="Net Price (AED)" required>
+          <FormField label="Net Price (EGP)" required>
             <FormInput name="netPrice" type="number" placeholder="0.00" min="0" step="0.01" required />
           </FormField>
-          <FormField label="Booking Fee (AED)">
+          <FormField label="Booking Fee (EGP)">
             <FormInput name="bookingFee" type="number" placeholder="0.00" min="0" step="0.01" />
           </FormField>
         </FormRow>

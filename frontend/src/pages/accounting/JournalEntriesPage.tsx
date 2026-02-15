@@ -1,9 +1,12 @@
-﻿import { Plus } from 'lucide-react';
+﻿import { useState } from 'react';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { DataTable, type Column } from '@/components/ui/data-table';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { FormDialog, FormField, FormInput, FormSelect, FormRow, FormTextarea } from '@/components/ui/form-dialog';
 import { useTranslation } from 'react-i18next';
-import { useJournalEntries } from '@/hooks/useApi';
+import { useJournalEntries, useCreateJournalEntry } from '@/hooks/useApi';
 
 interface JournalEntry {
   id: string;
@@ -30,14 +33,26 @@ const columns: Column<JournalEntry>[] = [
 
 export function JournalEntriesPage() {
   const { t } = useTranslation();
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { data: entries = [], isLoading } = useJournalEntries() as { data: JournalEntry[] | undefined; isLoading: boolean };
+  const createEntry = useCreateJournalEntry();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const fd = new FormData(e.target as HTMLFormElement);
+    createEntry.mutate(
+      { entryDate: fd.get('entryDate'), description: fd.get('description'), sourceType: fd.get('sourceType'), debitAccountCode: fd.get('debitAccountCode'), creditAccountCode: fd.get('creditAccountCode'), amount: Number(fd.get('amount')) },
+      { onSuccess: () => { setDialogOpen(false); toast.success('Journal entry created'); }, onError: () => toast.error('Failed to create entry') },
+    );
+  };
+
   return (
     <div>
       <PageHeader
         title={t('journals.title')}
         description={t('journals.description')}
         actions={
-          <button className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('journals.add')}
           </button>
         }
@@ -45,6 +60,37 @@ export function JournalEntriesPage() {
       <div className="p-6">
         <DataTable columns={columns} data={entries} loading={isLoading} searchPlaceholder={t('journals.search')} searchKeys={['entryNumber', 'description', 'sourceType']} exportable exportFilename="journal-entries" />
       </div>
+
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)} title="Add Journal Entry" onSubmit={handleSubmit} submitLabel="Create Entry" loading={createEntry.isPending}>
+        <FormRow>
+          <FormField label="Entry Date" required>
+            <FormInput name="entryDate" type="date" required />
+          </FormField>
+          <FormField label="Source Type">
+            <FormSelect name="sourceType">
+              <option value="manual">Manual</option>
+              <option value="receipt">Receipt</option>
+              <option value="booking">Booking</option>
+              <option value="refund">Refund</option>
+              <option value="adjustment">Adjustment</option>
+            </FormSelect>
+          </FormField>
+        </FormRow>
+        <FormField label="Description" required>
+          <FormTextarea name="description" placeholder="Entry description" rows={2} required />
+        </FormField>
+        <FormRow>
+          <FormField label="Debit Account Code" required>
+            <FormInput name="debitAccountCode" placeholder="e.g. 1101" required />
+          </FormField>
+          <FormField label="Credit Account Code" required>
+            <FormInput name="creditAccountCode" placeholder="e.g. 4100" required />
+          </FormField>
+        </FormRow>
+        <FormField label="Amount" required>
+          <FormInput name="amount" type="number" placeholder="0.00" min="0" step="0.01" required />
+        </FormField>
+      </FormDialog>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import {
   projectsApi, unitsApi, leadsApi, customersApi, bookingsApi,
   contractsApi, receiptsApi, brokersApi, coaApi, journalEntriesApi,
   employeesApi, payrollApi, maintenanceApi, inventoryApi,
+  procurementApi, contractorsApi, handoverApi,
   reportsApi, notificationsApi, platformApi,
 } from '@/services/api';
 
@@ -110,6 +111,9 @@ export function useCreateAccount() {
 export function useJournalEntries(params?: Record<string, unknown>) {
   return useResourceList('journals', journalEntriesApi.list, params);
 }
+export function useCreateJournalEntry() {
+  return useResourceMutation('journals', journalEntriesApi.create);
+}
 
 // ── Employees ─────────────────────────────────────────────
 export function useEmployees(params?: Record<string, unknown>) {
@@ -141,6 +145,36 @@ export function useInventoryItems(params?: Record<string, unknown>) {
 }
 export function useCreateInventoryItem() {
   return useResourceMutation('inventory', inventoryApi.create);
+}
+
+// ── Procurement ──────────────────────────────────────────
+export function useVendors(params?: Record<string, unknown>) {
+  return useResourceList('vendors', procurementApi.listVendors, params);
+}
+export function useCreateVendor() {
+  return useResourceMutation('vendors', procurementApi.createVendor);
+}
+export function usePurchaseOrders(params?: Record<string, unknown>) {
+  return useResourceList('purchase-orders', procurementApi.listPOs, params);
+}
+export function useCreatePO() {
+  return useResourceMutation('purchase-orders', procurementApi.createPO);
+}
+
+// ── Contractors ──────────────────────────────────────────
+export function useContractors(params?: Record<string, unknown>) {
+  return useResourceList('contractors', contractorsApi.list, params);
+}
+export function useCreateContractor() {
+  return useResourceMutation('contractors', contractorsApi.create);
+}
+
+// ── Handover ─────────────────────────────────────────────
+export function useHandovers(params?: Record<string, unknown>) {
+  return useResourceList('handovers', handoverApi.list, params);
+}
+export function useCreateHandover() {
+  return useResourceMutation('handovers', handoverApi.create);
 }
 
 // ── Reports / Dashboard ───────────────────────────────────

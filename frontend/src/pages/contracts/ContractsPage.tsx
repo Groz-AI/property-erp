@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Eye, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { DataTable, type Column } from '@/components/ui/data-table';
@@ -30,6 +30,12 @@ const columns: Column<Contract>[] = [
   { key: 'status', header: 'Status', render: (r) => <StatusBadge status={r.status} /> },
   { key: 'contractDate', header: 'Date', className: 'text-xs text-muted-foreground' },
   { key: 'expectedDelivery', header: 'Delivery', className: 'text-xs text-muted-foreground' },
+  { key: 'actions', header: '', sortable: false, className: 'w-10', render: () => (
+    <div className="flex items-center gap-0.5">
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="View"><Eye className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="More"><MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+    </div>
+  )},
 ];
 
 export function ContractsPage() {
@@ -49,7 +55,7 @@ export function ContractsPage() {
         title={t('contracts.title')}
         description={t('contracts.description')}
         actions={
-          <button onClick={() => setDialogOpen(true)} className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('contracts.add')}
           </button>
         }
@@ -67,7 +73,7 @@ export function ContractsPage() {
           </FormSelect>
         </FormField>
         <FormRow>
-          <FormField label="Total Amount (AED)" required>
+          <FormField label="Total Amount (EGP)" required>
             <FormInput type="number" placeholder="0.00" min="0" step="0.01" required />
           </FormField>
           <FormField label="Contract Date" required>
@@ -97,7 +103,7 @@ export function ContractsPage() {
           <FormField label="Expected Delivery" required>
             <FormInput type="date" required />
           </FormField>
-          <FormField label="Maintenance Deposit (AED)">
+          <FormField label="Maintenance Deposit (EGP)">
             <FormInput type="number" placeholder="0.00" min="0" step="0.01" />
           </FormField>
         </FormRow>

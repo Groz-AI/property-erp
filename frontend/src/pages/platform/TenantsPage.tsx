@@ -21,6 +21,7 @@ export function TenantsPage() {
         name: fd.get('name'),
         slug: fd.get('slug'),
         domain: fd.get('domain') || undefined,
+        maxUsers: Number(fd.get('maxUsers') || 10),
         adminEmail: fd.get('adminEmail'),
         adminPassword: fd.get('adminPassword'),
         adminFirstName: fd.get('adminFirstName'),
@@ -54,7 +55,7 @@ export function TenantsPage() {
         actions={
           <button
             onClick={() => setDialogOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl gradient-primary px-4 py-2.5 text-sm font-semibold text-white shadow-colored hover:opacity-90 transition-opacity"
+            className="btn-primary"
           >
             <Plus className="h-4 w-4" /> New Tenant
           </button>
@@ -62,26 +63,26 @@ export function TenantsPage() {
       />
 
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="bg-card rounded-2xl border border-border/60 shadow-soft overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border/50 bg-muted/30">
-                  <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Tenant</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Slug</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Status</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Users</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Projects</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Units</th>
-                  <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Revenue</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Created</th>
-                  <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">Actions</th>
+                <tr className="border-b border-border/40 bg-muted/20">
+                  <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Tenant</th>
+                  <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Slug</th>
+                  <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Status</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Users</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Projects</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Units</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Revenue</th>
+                  <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Created</th>
+                  <th className="px-5 py-3.5 text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading ? (
                   Array.from({ length: 3 }).map((_, i) => (
-                    <tr key={i} className="border-b border-border/30">
+                    <tr key={i} className="border-b border-border/25">
                       {Array.from({ length: 9 }).map((_, j) => (
                         <td key={j} className="px-5 py-3.5">
                           <div className="h-4 rounded bg-muted animate-pulse" style={{ width: `${50 + Math.random() * 40}%` }} />
@@ -98,7 +99,7 @@ export function TenantsPage() {
                   </tr>
                 ) : (
                   tenants.map((t: any) => (
-                    <tr key={t.id} className="border-b border-border/30 last:border-0 hover:bg-muted/20 transition-colors">
+                    <tr key={t.id} className="border-b border-border/25 last:border-0 hover:bg-primary/[0.02] transition-colors duration-150">
                       <td className="px-5 py-3.5">
                         <Link to={`/platform/tenants/${t.id}`} className="font-semibold hover:text-primary transition-colors">
                           {t.name}
@@ -107,10 +108,10 @@ export function TenantsPage() {
                       </td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{t.slug}</td>
                       <td className="px-5 py-3.5"><StatusBadge status={t.isActive ? 'active' : 'inactive'} /></td>
-                      <td className="px-5 py-3.5 text-right">{t.usersCount}</td>
+                      <td className="px-5 py-3.5 text-right">{t.usersCount}<span className="text-muted-foreground">/{t.maxUsers || '∞'}</span></td>
                       <td className="px-5 py-3.5 text-right">{t.projectsCount}</td>
                       <td className="px-5 py-3.5 text-right">{t.unitsCount}</td>
-                      <td className="px-5 py-3.5 text-right font-semibold">AED {Number(t.revenue || 0).toLocaleString()}</td>
+                      <td className="px-5 py-3.5 text-right font-semibold">EGP {Number(t.revenue || 0).toLocaleString()}</td>
                       <td className="px-5 py-3.5 text-xs text-muted-foreground">{t.createdAt ? new Date(t.createdAt).toLocaleDateString() : '—'}</td>
                       <td className="px-5 py-3.5 text-center">
                         <button
@@ -151,6 +152,9 @@ export function TenantsPage() {
               <FormInput name="domain" placeholder="e.g. erp.sunrise.com" />
             </FormField>
           </FormRow>
+          <FormField label="Max Users (account limit)">
+            <FormInput name="maxUsers" type="number" placeholder="10" min="1" max="1000" defaultValue="10" />
+          </FormField>
           <div className="border-t border-border/40 pt-4">
             <p className="text-xs font-semibold text-muted-foreground mb-3">Tenant Admin Account</p>
             <FormRow>

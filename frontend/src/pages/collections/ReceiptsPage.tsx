@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Eye, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { DataTable, type Column } from '@/components/ui/data-table';
@@ -29,6 +29,12 @@ const columns: Column<Receipt>[] = [
   { key: 'referenceNumber', header: 'Reference', className: 'font-mono text-xs text-muted-foreground' },
   { key: 'status', header: 'Status', render: (r) => <StatusBadge status={r.status} /> },
   { key: 'receiptDate', header: 'Date', className: 'text-xs text-muted-foreground' },
+  { key: 'actions', header: '', sortable: false, className: 'w-10', render: () => (
+    <div className="flex items-center gap-0.5">
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="View"><Eye className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="More"><MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+    </div>
+  )},
 ];
 
 export function ReceiptsPage() {
@@ -52,7 +58,7 @@ export function ReceiptsPage() {
         title={t('receipts.title')}
         description={t('receipts.description')}
         actions={
-          <button onClick={() => setDialogOpen(true)} className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('receipts.add')}
           </button>
         }
@@ -68,7 +74,7 @@ export function ReceiptsPage() {
           </FormSelect>
         </FormField>
         <FormRow>
-          <FormField label="Amount (AED)" required>
+          <FormField label="Amount (EGP)" required>
             <FormInput name="amount" type="number" placeholder="0.00" min="0" step="0.01" required />
           </FormField>
           <FormField label="Receipt Date" required>

@@ -91,10 +91,10 @@ export function CommandPalette() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]">
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-border/60 bg-card shadow-soft-lg mx-4 overflow-hidden animate-fade-in-scale">
-        <div className="flex items-center gap-3 border-b border-border/50 px-4 py-3.5">
-          <Search className="h-4 w-4 text-muted-foreground/60 shrink-0" />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-[2px]" onClick={() => setOpen(false)} />
+      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-border/50 bg-card shadow-soft-lg mx-4 overflow-hidden animate-fade-in-scale">
+        <div className="flex items-center gap-3 border-b border-border/40 px-4 py-4">
+          <Search className="h-4 w-4 text-muted-foreground/50 shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -102,15 +102,15 @@ export function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t('common.search_pages')}
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/50"
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/40"
           />
-          <kbd className="hidden sm:inline-flex items-center gap-1 rounded-md border border-border/60 bg-muted/50 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/70">
+          <kbd className="hidden sm:inline-flex items-center gap-1 rounded-md border border-border/40 bg-muted/30 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/50">
             ESC
           </kbd>
         </div>
-        <div className="max-h-[320px] overflow-y-auto py-1.5">
+        <div className="max-h-[340px] overflow-y-auto p-1.5">
           {filtered.length === 0 ? (
-            <div className="px-4 py-10 text-center text-sm text-muted-foreground">{t('common.no_results')}</div>
+            <div className="px-4 py-12 text-center text-sm text-muted-foreground/60">{t('common.no_results')}</div>
           ) : (
             filtered.map((cmd, i) => {
               const Icon = cmd.icon;
@@ -119,22 +119,21 @@ export function CommandPalette() {
                   key={cmd.href}
                   onClick={() => execute(i)}
                   onMouseEnter={() => setSelectedIndex(i)}
-                  className={`flex w-full items-center gap-3 px-4 py-2.5 mx-1.5 rounded-lg text-sm transition-all duration-150 ${
-                    i === selectedIndex ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-muted/50'
+                  className={`flex w-full items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm transition-all duration-150 ${
+                    i === selectedIndex ? 'bg-primary/8 text-primary font-medium' : 'text-foreground/80 hover:bg-muted/40'
                   }`}
-                  style={{ width: 'calc(100% - 12px)' }}
                 >
-                  <Icon className={`h-4 w-4 shrink-0 ${i === selectedIndex ? 'text-primary' : 'text-muted-foreground/60'}`} />
+                  <Icon className={`h-4 w-4 shrink-0 ${i === selectedIndex ? 'text-primary' : 'text-muted-foreground/40'}`} />
                   <span>{cmd.label}</span>
                 </button>
               );
             })
           )}
         </div>
-        <div className="border-t border-border/40 px-4 py-2.5 flex items-center gap-4 text-[10px] text-muted-foreground/60 bg-muted/20">
-          <span className="flex items-center gap-1"><kbd className="rounded-md border border-border/50 bg-background/80 px-1 py-0.5 font-mono">↑↓</kbd> {t('common.navigate')}</span>
-          <span className="flex items-center gap-1"><kbd className="rounded-md border border-border/50 bg-background/80 px-1 py-0.5 font-mono">↵</kbd> {t('common.open')}</span>
-          <span className="flex items-center gap-1"><kbd className="rounded-md border border-border/50 bg-background/80 px-1 py-0.5 font-mono">Esc</kbd> {t('common.close')}</span>
+        <div className="border-t border-border/30 px-4 py-2.5 flex items-center gap-4 text-[10px] text-muted-foreground/40 bg-muted/10">
+          <span className="flex items-center gap-1"><kbd className="rounded-md border border-border/30 bg-background/50 px-1 py-0.5 font-mono">↑↓</kbd> {t('common.navigate')}</span>
+          <span className="flex items-center gap-1"><kbd className="rounded-md border border-border/30 bg-background/50 px-1 py-0.5 font-mono">↵</kbd> {t('common.open')}</span>
+          <span className="flex items-center gap-1"><kbd className="rounded-md border border-border/30 bg-background/50 px-1 py-0.5 font-mono">Esc</kbd> {t('common.close')}</span>
         </div>
       </div>
     </div>

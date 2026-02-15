@@ -1,8 +1,11 @@
-﻿import { Plus } from 'lucide-react';
+﻿import { useState } from 'react';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { DataTable, type Column } from '@/components/ui/data-table';
+import { FormDialog, FormField, FormInput, FormSelect, FormRow } from '@/components/ui/form-dialog';
 import { useTranslation } from 'react-i18next';
-import { useChartOfAccounts } from '@/hooks/useApi';
+import { useChartOfAccounts, useCreateAccount } from '@/hooks/useApi';
 
 interface Account {
   id: string;
@@ -37,14 +40,26 @@ const columns: Column<Account>[] = [
 
 export function ChartOfAccountsPage() {
   const { t } = useTranslation();
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { data: accounts = [], isLoading } = useChartOfAccounts() as { data: Account[] | undefined; isLoading: boolean };
+  const createAccount = useCreateAccount();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const fd = new FormData(e.target as HTMLFormElement);
+    createAccount.mutate(
+      { code: fd.get('code'), name: fd.get('name'), nameAr: fd.get('nameAr'), type: fd.get('type'), isHeader: fd.get('isHeader') === 'true' },
+      { onSuccess: () => { setDialogOpen(false); toast.success('Account created'); }, onError: () => toast.error('Failed to create account') },
+    );
+  };
+
   return (
     <div>
       <PageHeader
         title={t('coa.title')}
         description={t('coa.description')}
         actions={
-          <button className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('coa.add')}
           </button>
         }
@@ -52,6 +67,36 @@ export function ChartOfAccountsPage() {
       <div className="p-6">
         <DataTable columns={columns} data={accounts} loading={isLoading} searchPlaceholder={t('coa.search')} searchKeys={['code', 'name', 'type']} />
       </div>
+
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)} title="Add Account" onSubmit={handleSubmit} submitLabel="Create Account" loading={createAccount.isPending}>
+        <FormRow>
+          <FormField label="Account Code" required>
+            <FormInput name="code" placeholder="e.g. 1101" required />
+          </FormField>
+          <FormField label="Type" required>
+            <FormSelect name="type" required>
+              <option value="">Select type</option>
+              <option value="asset">Asset</option>
+              <option value="liability">Liability</option>
+              <option value="equity">Equity</option>
+              <option value="revenue">Revenue</option>
+              <option value="expense">Expense</option>
+            </FormSelect>
+          </FormField>
+        </FormRow>
+        <FormField label="Account Name (EN)" required>
+          <FormInput name="name" placeholder="Account name" required />
+        </FormField>
+        <FormField label="Account Name (AR)">
+          <FormInput name="nameAr" placeholder="اسم الحساب" dir="rtl" />
+        </FormField>
+        <FormField label="Is Header Account?">
+          <FormSelect name="isHeader">
+            <option value="false">No - Transactional</option>
+            <option value="true">Yes - Header/Group</option>
+          </FormSelect>
+        </FormField>
+      </FormDialog>
     </div>
   );
 }

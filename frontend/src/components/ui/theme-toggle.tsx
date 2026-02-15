@@ -26,7 +26,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div className="inline-flex items-center gap-0.5 rounded-xl border border-border/60 bg-muted/30 p-0.5">
+    <div className="inline-flex items-center gap-0.5 rounded-xl border border-border/50 bg-muted/30 p-0.5">
       {themes.map(({ value, icon: Icon, label }) => (
         <button
           key={value}

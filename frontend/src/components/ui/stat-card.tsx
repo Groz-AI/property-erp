@@ -13,25 +13,27 @@ interface StatCardProps {
 export function StatCard({ title, value, subtitle, icon: Icon, trend, className = '', variant = 'default' }: StatCardProps) {
   if (variant === 'gradient') {
     return (
-      <div className={`relative overflow-hidden rounded-2xl gradient-primary p-6 text-white shadow-soft-md ${className}`}>
-        <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-white/10 -translate-y-8 translate-x-8" />
-        <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full bg-white/5 translate-y-6 -translate-x-6" />
+      <div className={`relative overflow-hidden rounded-2xl gradient-primary p-6 text-white shadow-lg shadow-primary/20 ${className}`}>
+        <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/[0.08]" />
+        <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-full bg-white/[0.05]" />
         <div className="relative">
           <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-white/70">{title}</p>
-              <p className="text-3xl font-bold tracking-tight">{value}</p>
-              {subtitle && <p className="text-xs text-white/60">{subtitle}</p>}
+            <div className="space-y-1.5">
+              <p className="text-[13px] font-medium text-white/60">{title}</p>
+              <p className="text-3xl font-bold tracking-tight leading-none">{value}</p>
+              {subtitle && <p className="text-[12px] text-white/50 mt-1">{subtitle}</p>}
             </div>
-            <div className="rounded-xl bg-white/15 p-2.5 backdrop-blur-sm">
-              <Icon className="h-5 w-5" />
+            <div className="rounded-xl bg-white/[0.12] p-2.5 backdrop-blur-sm">
+              <Icon className="h-5 w-5 text-white/80" />
             </div>
           </div>
           {trend && (
-            <div className="mt-4 flex items-center gap-1.5 text-xs">
-              {trend.value >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-              <span className="font-semibold">{Math.abs(trend.value)}%</span>
-              <span className="text-white/60">{trend.label}</span>
+            <div className="mt-4 flex items-center gap-1.5 text-[12px]">
+              <div className="flex items-center gap-1 rounded-full bg-white/[0.12] px-2 py-0.5 font-semibold">
+                {trend.value >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {Math.abs(trend.value)}%
+              </div>
+              <span className="text-white/50">{trend.label}</span>
             </div>
           )}
         </div>
@@ -40,24 +42,24 @@ export function StatCard({ title, value, subtitle, icon: Icon, trend, className 
   }
 
   return (
-    <div className={`group bg-card rounded-2xl border border-border/60 p-6 shadow-soft hover:shadow-soft-md transition-all duration-300 ${className}`}>
+    <div className={`group bg-card rounded-2xl border border-border/50 p-6 shadow-soft hover:shadow-soft-md hover:border-border/80 transition-all duration-300 ${className}`}>
       <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-2xl font-bold tracking-tight">{value}</p>
-          {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+        <div className="space-y-1.5">
+          <p className="text-[13px] font-medium text-muted-foreground">{title}</p>
+          <p className="text-[26px] font-bold tracking-tight leading-none">{value}</p>
+          {subtitle && <p className="text-[12px] text-muted-foreground/70 mt-1">{subtitle}</p>}
         </div>
-        <div className="rounded-xl bg-primary/10 p-2.5 group-hover:bg-primary/15 transition-colors">
-          <Icon className="h-5 w-5 text-primary" />
+        <div className="rounded-xl bg-primary/8 p-2.5 group-hover:bg-primary/12 transition-colors duration-300">
+          <Icon className="h-5 w-5 text-primary/80 group-hover:text-primary transition-colors duration-300" />
         </div>
       </div>
       {trend && (
-        <div className="mt-4 flex items-center gap-1.5 text-xs">
-          <div className={`flex items-center gap-1 font-semibold ${trend.value >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
-            {trend.value >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+        <div className="mt-4 flex items-center gap-2 text-[12px]">
+          <div className={`flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold ${trend.value >= 0 ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'}`}>
+            {trend.value >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
             {Math.abs(trend.value)}%
           </div>
-          <span className="text-muted-foreground">{trend.label}</span>
+          <span className="text-muted-foreground/60">{trend.label}</span>
         </div>
       )}
     </div>

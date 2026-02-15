@@ -20,7 +20,7 @@ const tabs = [
 function SettingsTabs({ active, onTabChange }: TabProps) {
   const { t } = useTranslation();
   return (
-    <div className="flex gap-1 border-b border-border/50">
+    <div className="flex gap-0.5 border-b border-border/40 -mb-px">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = active === tab.id;
@@ -28,13 +28,13 @@ function SettingsTabs({ active, onTabChange }: TabProps) {
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200 ${
+            className={`flex items-center gap-2 px-4 py-3.5 text-[13px] font-medium border-b-2 transition-all duration-200 ${
               isActive
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
+                ? 'border-primary text-foreground'
+                : 'border-transparent text-muted-foreground/60 hover:text-foreground hover:border-border/50'
             }`}
           >
-            <Icon className={`h-4 w-4 ${isActive ? 'text-primary' : 'text-muted-foreground/60'}`} />
+            <Icon className={`h-4 w-4 ${isActive ? 'text-primary' : 'text-muted-foreground/40'}`} />
             {t(tab.labelKey)}
           </button>
         );
@@ -124,7 +124,8 @@ function LocalizationTab() {
           </FormSelect>
         </FormField>
         <FormField label={t('settings.localization.currency')}>
-          <FormSelect defaultValue="AED">
+          <FormSelect defaultValue="EGP">
+            <option value="EGP">EGP — Egyptian Pound</option>
             <option value="AED">AED — UAE Dirham</option>
             <option value="USD">USD — US Dollar</option>
             <option value="EUR">EUR — Euro</option>
@@ -212,12 +213,12 @@ function SecurityTab() {
       </div>
       <div className="border-t border-border/50 pt-6">
         <h3 className="font-medium mb-3">{t('settings.security.two_factor')}</h3>
-        <div className="flex items-center justify-between rounded-xl border border-border/60 p-4">
+        <div className="flex items-center justify-between rounded-xl border border-border/50 p-4">
           <div>
             <div className="text-sm font-medium">{t('settings.security.enable_2fa')}</div>
             <div className="text-xs text-muted-foreground">{t('settings.security.enable_2fa_desc')}</div>
           </div>
-          <button className="rounded-xl border border-border/60 px-4 py-2 text-sm font-medium hover:bg-muted transition-all duration-200">
+          <button className="rounded-xl border border-border/50 px-4 py-2 text-sm font-medium hover:bg-muted transition-all duration-200">
             {t('settings.security.enable')}
           </button>
         </div>
@@ -225,7 +226,7 @@ function SecurityTab() {
       <div className="border-t border-border/50 pt-6">
         <h3 className="font-medium mb-3">{t('settings.security.active_sessions')}</h3>
         <div className="space-y-2">
-          <div className="flex items-center justify-between rounded-xl border border-border/60 p-3.5">
+          <div className="flex items-center justify-between rounded-xl border border-border/50 p-3.5">
             <div>
               <div className="text-sm font-medium">{t('settings.security.current_session')}</div>
               <div className="text-xs text-muted-foreground">Chrome on Windows — 192.168.1.100 — Active now</div>
@@ -248,7 +249,7 @@ export function SettingsPage() {
         title={t('settings.title')}
         description={t('settings.description')}
         actions={
-          <button className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button className="btn-primary">
             <Save className="h-4 w-4" /> {t('settings.save')}
           </button>
         }

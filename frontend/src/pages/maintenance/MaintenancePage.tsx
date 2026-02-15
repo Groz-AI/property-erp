@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { DataTable, type Column } from '@/components/ui/data-table';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { FormDialog, FormField, FormInput, FormSelect, FormRow, FormTextarea } from '@/components/ui/form-dialog';
 import { useTranslation } from 'react-i18next';
-import { useMaintenanceTickets } from '@/hooks/useApi';
+import { useMaintenanceTickets, useCreateTicket } from '@/hooks/useApi';
 
 interface Ticket {
   id: string;
@@ -43,8 +45,18 @@ const columns: Column<Ticket>[] = [
 export function MaintenancePage() {
   const { t } = useTranslation();
   const [statusFilter, setStatusFilter] = useState('all');
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { data: tickets = [], isLoading } = useMaintenanceTickets(statusFilter !== 'all' ? { status: statusFilter } : undefined) as { data: Ticket[] | undefined; isLoading: boolean };
-  const filtered = tickets;
+  const createTicket = useCreateTicket();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const fd = new FormData(e.target as HTMLFormElement);
+    createTicket.mutate(
+      { subject: fd.get('subject'), category: fd.get('category'), priority: fd.get('priority'), description: fd.get('description'), unitCode: fd.get('unitCode') },
+      { onSuccess: () => { setDialogOpen(false); toast.success('Ticket created'); }, onError: () => toast.error('Failed to create ticket') },
+    );
+  };
 
   return (
     <div>
@@ -52,7 +64,7 @@ export function MaintenancePage() {
         title={t('maintenance.title')}
         description={t('maintenance.description')}
         actions={
-          <button className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('maintenance.add')}
           </button>
         }
@@ -63,15 +75,50 @@ export function MaintenancePage() {
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${statusFilter === s ? 'gradient-primary text-white border-transparent shadow-sm' : 'bg-card border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+              className={`rounded-full px-3.5 py-1.5 text-[12px] font-medium border transition-all duration-200 ${statusFilter === s ? 'bg-foreground text-background border-transparent shadow-sm' : 'bg-transparent border-border/50 text-muted-foreground/70 hover:bg-muted/60 hover:text-foreground hover:border-border/80'}`}
             >
               {s === 'all' ? 'All' : s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
               <span className="ml-1 opacity-70">({s === 'all' ? tickets.length : ''})</span>
             </button>
           ))}
         </div>
-        <DataTable columns={columns} data={filtered} loading={isLoading} searchPlaceholder={t('maintenance.search')} searchKeys={['ticketNumber', 'customer', 'subject', 'unit']} />
+        <DataTable columns={columns} data={tickets} loading={isLoading} searchPlaceholder={t('maintenance.search')} searchKeys={['ticketNumber', 'customer', 'subject', 'unit']} />
       </div>
+
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)} title="New Maintenance Ticket" onSubmit={handleSubmit} submitLabel="Create Ticket" loading={createTicket.isPending}>
+        <FormField label="Subject" required>
+          <FormInput name="subject" placeholder="Brief description of the issue" required />
+        </FormField>
+        <FormRow>
+          <FormField label="Category" required>
+            <FormSelect name="category" required>
+              <option value="">Select category</option>
+              <option value="plumbing">Plumbing</option>
+              <option value="electrical">Electrical</option>
+              <option value="hvac">HVAC</option>
+              <option value="structural">Structural</option>
+              <option value="painting">Painting</option>
+              <option value="cleaning">Cleaning</option>
+              <option value="pest_control">Pest Control</option>
+              <option value="other">Other</option>
+            </FormSelect>
+          </FormField>
+          <FormField label="Priority" required>
+            <FormSelect name="priority" required>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </FormSelect>
+          </FormField>
+        </FormRow>
+        <FormField label="Unit Code">
+          <FormInput name="unitCode" placeholder="e.g. SG-PH1-A-101" />
+        </FormField>
+        <FormField label="Description">
+          <FormTextarea name="description" placeholder="Detailed description..." rows={3} />
+        </FormField>
+      </FormDialog>
     </div>
   );
 }

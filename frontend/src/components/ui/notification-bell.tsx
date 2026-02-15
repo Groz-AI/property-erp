@@ -34,8 +34,8 @@ export function NotificationBell() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 z-50 w-[340px] rounded-2xl border border-border/60 bg-card shadow-soft-lg overflow-hidden animate-fade-in-scale">
-            <div className="flex items-center justify-between border-b border-border/40 px-4 py-3.5">
+          <div className="absolute right-0 top-full mt-2 z-50 w-[360px] rounded-2xl border border-border/50 bg-card shadow-soft-lg overflow-hidden animate-fade-in-scale">
+            <div className="flex items-center justify-between border-b border-border/30 px-4 py-3.5">
               <h3 className="text-sm font-semibold">{t('notifications.title')}</h3>
               {unreadCount > 0 && (
                 <button onClick={markAllRead} className="text-[11px] font-medium text-primary hover:text-primary/80 transition-colors">

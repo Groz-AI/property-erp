@@ -13,7 +13,7 @@ export function LanguageToggle() {
     <button
       onClick={toggle}
       title={isArabic ? 'Switch to English' : 'التبديل إلى العربية'}
-      className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200 border border-border/60"
+      className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200 border border-border/50"
     >
       <Languages className="h-3.5 w-3.5" />
       <span>{isArabic ? 'EN' : 'AR'}</span>

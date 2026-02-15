@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Eye, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { DataTable, type Column } from '@/components/ui/data-table';
@@ -39,6 +39,12 @@ const columns: Column<Lead>[] = [
   { key: 'assignedTo', header: 'Assigned To', className: 'text-xs' },
   { key: 'status', header: 'Stage', render: (r) => <StatusBadge status={r.status} /> },
   { key: 'createdAt', header: 'Created', className: 'text-xs text-muted-foreground' },
+  { key: 'actions', header: '', sortable: false, className: 'w-10', render: () => (
+    <div className="flex items-center gap-0.5">
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="View"><Eye className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="More"><MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+    </div>
+  )},
 ];
 
 export function LeadsPage() {
@@ -64,7 +70,7 @@ export function LeadsPage() {
         title={t('leads.title')}
         description={t('leads.description')}
         actions={
-          <button onClick={() => setDialogOpen(true)} className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('leads.add')}
           </button>
         }
@@ -75,7 +81,7 @@ export function LeadsPage() {
             <button
               key={s}
               onClick={() => setStageFilter(s)}
-              className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${stageFilter === s ? 'gradient-primary text-white border-transparent shadow-sm' : 'bg-card border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+              className={`rounded-full px-3.5 py-1.5 text-[12px] font-medium border transition-all duration-200 ${stageFilter === s ? 'bg-foreground text-background border-transparent shadow-sm' : 'bg-transparent border-border/50 text-muted-foreground/70 hover:bg-muted/60 hover:text-foreground hover:border-border/80'}`}
             >
               {s === 'all' ? 'All' : s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
               <span className="ml-1 opacity-70">({s === 'all' ? leads.length : ''})</span>

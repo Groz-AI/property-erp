@@ -120,12 +120,14 @@ async function seed() {
     // ============================================================
     // 5. CURRENCIES & TAX RULES
     // ============================================================
-    await qr.query(`INSERT INTO currencies (tenant_id, code, name, symbol, decimal_places, is_default) VALUES ($1, 'AED', 'UAE Dirham', 'د.إ', 2, true) ON CONFLICT DO NOTHING`, [tenantId]);
+    await qr.query(`INSERT INTO currencies (tenant_id, code, name, symbol, decimal_places, is_default) VALUES ($1, 'EGP', 'Egyptian Pound', 'E£', 2, true) ON CONFLICT DO NOTHING`, [tenantId]);
+    await qr.query(`INSERT INTO currencies (tenant_id, code, name, symbol, decimal_places) VALUES ($1, 'AED', 'UAE Dirham', 'د.إ', 2) ON CONFLICT DO NOTHING`, [tenantId]);
     await qr.query(`INSERT INTO currencies (tenant_id, code, name, symbol, decimal_places) VALUES ($1, 'USD', 'US Dollar', '$', 2) ON CONFLICT DO NOTHING`, [tenantId]);
     await qr.query(`INSERT INTO currencies (tenant_id, code, name, symbol, decimal_places) VALUES ($1, 'EUR', 'Euro', '€', 2) ON CONFLICT DO NOTHING`, [tenantId]);
 
-    await qr.query(`INSERT INTO exchange_rates (tenant_id, from_currency, to_currency, rate, effective_date) VALUES ($1, 'USD', 'AED', 3.6725, '2026-01-01') ON CONFLICT DO NOTHING`, [tenantId]);
-    await qr.query(`INSERT INTO exchange_rates (tenant_id, from_currency, to_currency, rate, effective_date) VALUES ($1, 'EUR', 'AED', 3.9800, '2026-01-01') ON CONFLICT DO NOTHING`, [tenantId]);
+    await qr.query(`INSERT INTO exchange_rates (tenant_id, from_currency, to_currency, rate, effective_date) VALUES ($1, 'USD', 'EGP', 50.85, '2026-01-01') ON CONFLICT DO NOTHING`, [tenantId]);
+    await qr.query(`INSERT INTO exchange_rates (tenant_id, from_currency, to_currency, rate, effective_date) VALUES ($1, 'EUR', 'EGP', 55.10, '2026-01-01') ON CONFLICT DO NOTHING`, [tenantId]);
+    await qr.query(`INSERT INTO exchange_rates (tenant_id, from_currency, to_currency, rate, effective_date) VALUES ($1, 'AED', 'EGP', 13.84, '2026-01-01') ON CONFLICT DO NOTHING`, [tenantId]);
 
     await qr.query(`INSERT INTO tax_rules (tenant_id, name, type, rate, is_inclusive) VALUES ($1, 'UAE VAT', 'vat', 5.0000, false) ON CONFLICT DO NOTHING`, [tenantId]);
     await qr.query(`INSERT INTO tax_rules (tenant_id, name, type, rate, is_inclusive) VALUES ($1, 'Registration Fee', 'registration', 4.0000, false) ON CONFLICT DO NOTHING`, [tenantId]);

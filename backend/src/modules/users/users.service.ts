@@ -1,14 +1,17 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './entities/user.entity';
+import { TenantEntity } from '../tenants/entities/tenant.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly repo: Repository<UserEntity>,
+    @InjectRepository(TenantEntity)
+    private readonly tenantRepo: Repository<TenantEntity>,
   ) {}
 
   async findAll(tenantId: string): Promise<UserEntity[]> {
@@ -29,6 +32,15 @@ export class UsersService {
   }
 
   async create(tenantId: string, data: Partial<UserEntity> & { password?: string }): Promise<UserEntity> {
+    // Enforce tenant max_users limit
+    const tenant = await this.tenantRepo.findOne({ where: { id: tenantId } });
+    if (tenant) {
+      const currentCount = await this.repo.count({ where: { tenantId } });
+      if (currentCount >= tenant.maxUsers) {
+        throw new ForbiddenException(`User limit reached. This tenant allows a maximum of ${tenant.maxUsers} users. Contact the platform administrator to increase your limit.`);
+      }
+    }
+
     if (data.email) {
       const existing = await this.repo.findOne({ where: { email: data.email.toLowerCase() } });
       if (existing) throw new ConflictException('Email already exists');

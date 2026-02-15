@@ -20,6 +20,9 @@ export class TenantEntity {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
+  @Column({ name: 'max_users', type: 'int', default: 10 })
+  maxUsers: number;
+
   @Column({ type: 'jsonb', default: '{}' })
   settings: Record<string, any>;
 

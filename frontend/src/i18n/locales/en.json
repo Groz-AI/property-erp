@@ -412,6 +412,7 @@
     "none": "No notifications"
   },
   "currency": {
+    "egp": "EGP",
     "aed": "AED",
     "usd": "USD",
     "eur": "EUR"

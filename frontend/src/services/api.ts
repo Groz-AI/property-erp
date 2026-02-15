@@ -89,6 +89,7 @@ export const coaApi = {
 export const journalEntriesApi = {
   list: (params?: Record<string, unknown>) => api.get<{ data: any[] }>('/accounting/journals', { params }),
   get: (id: string) => api.get<{ data: any }>(`/accounting/journals/${id}`),
+  create: (data: any) => api.post<{ data: any }>('/accounting/journals', data),
 };
 
 export const employeesApi = {
@@ -117,6 +118,31 @@ export const inventoryApi = {
   get: (id: string) => api.get<{ data: any }>(`/inventory/items/${id}`),
   create: (data: any) => api.post<{ data: any }>('/inventory/items', data),
   update: (id: string, data: any) => api.patch<{ data: any }>(`/inventory/items/${id}`, data),
+};
+
+// ── Procurement ──────────────────────────────────────────
+export const procurementApi = {
+  listVendors: (params?: Record<string, unknown>) => api.get<{ data: any[] }>('/procurement/vendors', { params }),
+  createVendor: (data: any) => api.post<{ data: any }>('/procurement/vendors', data),
+  listPOs: (params?: Record<string, unknown>) => api.get<{ data: any[] }>('/procurement/purchase-orders', { params }),
+  createPO: (data: any) => api.post<{ data: any }>('/procurement/purchase-orders', data),
+};
+
+// ── Contractors ──────────────────────────────────────────
+export const contractorsApi = {
+  list: (params?: Record<string, unknown>) => api.get<{ data: any[] }>('/contractors', { params }),
+  get: (id: string) => api.get<{ data: any }>(`/contractors/${id}`),
+  create: (data: any) => api.post<{ data: any }>('/contractors', data),
+  listClaims: (params?: Record<string, unknown>) => api.get<{ data: any[] }>('/contractors/claims', { params }),
+  createClaim: (data: any) => api.post<{ data: any }>('/contractors/claims', data),
+};
+
+// ── Handover ─────────────────────────────────────────────
+export const handoverApi = {
+  list: (params?: Record<string, unknown>) => api.get<{ data: any[] }>('/handover', { params }),
+  get: (id: string) => api.get<{ data: any }>(`/handover/${id}`),
+  create: (data: any) => api.post<{ data: any }>('/handover', data),
+  update: (id: string, data: any) => api.patch<{ data: any }>(`/handover/${id}`, data),
 };
 
 // ── Reports / Dashboard ───────────────────────────────────

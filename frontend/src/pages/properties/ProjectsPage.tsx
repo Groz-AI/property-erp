@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { Plus, MapPin, Calendar } from 'lucide-react';
+import { Plus, MapPin, Calendar, Eye, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { DataTable, type Column } from '@/components/ui/data-table';
@@ -28,6 +28,12 @@ const columns: Column<Project>[] = [
   { key: 'status', header: 'Status', render: (r) => <StatusBadge status={r.status} /> },
   { key: 'startDate', header: 'Start', render: (r) => <span className="flex items-center gap-1 text-xs text-muted-foreground"><Calendar className="h-3 w-3" />{r.startDate}</span> },
   { key: 'expectedCompletion', header: 'Completion', render: (r) => <span className="text-xs text-muted-foreground">{r.expectedCompletion}</span> },
+  { key: 'actions', header: '', sortable: false, className: 'w-10', render: () => (
+    <div className="flex items-center gap-0.5">
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="View"><Eye className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+      <button className="rounded-lg p-1.5 hover:bg-muted transition-colors" title="More"><MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground/60" /></button>
+    </div>
+  )},
 ];
 
 export function ProjectsPage() {
@@ -62,7 +68,7 @@ export function ProjectsPage() {
         title={t('projects.title')}
         description={t('projects.description')}
         actions={
-          <button onClick={() => setDialogOpen(true)} className="inline-flex items-center gap-2 rounded-xl gradient-primary px-5 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-200">
+          <button onClick={() => setDialogOpen(true)} className="btn-primary">
             <Plus className="h-4 w-4" /> {t('projects.add')}
           </button>
         }

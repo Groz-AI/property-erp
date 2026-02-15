@@ -21,6 +21,9 @@ import { PayrollPage } from '@/pages/payroll/PayrollPage';
 import { MaintenancePage } from '@/pages/maintenance/MaintenancePage';
 import { BrokersPage } from '@/pages/brokers/BrokersPage';
 import { InventoryPage } from '@/pages/inventory/InventoryPage';
+import { ProcurementPage } from '@/pages/procurement/ProcurementPage';
+import { ContractorsPage } from '@/pages/contractors/ContractorsPage';
+import { HandoverPage } from '@/pages/handover/HandoverPage';
 import { SettingsPage } from '@/pages/settings/SettingsPage';
 import { PlatformDashboard } from '@/pages/platform/PlatformDashboard';
 import { TenantsPage } from '@/pages/platform/TenantsPage';
@@ -107,6 +110,9 @@ export default function App() {
           <Route path="/maintenance" element={<MaintenancePage />} />
           <Route path="/brokers" element={<BrokersPage />} />
           <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/procurement" element={<ProcurementPage />} />
+          <Route path="/contractors" element={<ContractorsPage />} />
+          <Route path="/handover" element={<HandoverPage />} />
 
           {/* Settings */}
           <Route path="/settings" element={<SettingsPage />} />
