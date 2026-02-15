@@ -41,7 +41,7 @@ export function EmployeesPage() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     createEmployee.mutate(
-      { firstName: fd.get('firstName'), lastName: fd.get('lastName'), email: fd.get('email'), department: fd.get('department'), designation: fd.get('designation'), joinDate: fd.get('joinDate'), basicSalary: Number(fd.get('basicSalary')), nationality: fd.get('nationality') },
+      { firstName: fd.get('firstName'), lastName: fd.get('lastName'), email: fd.get('email'), department: fd.get('department'), jobTitle: fd.get('designation'), hireDate: fd.get('joinDate'), basicSalary: Number(fd.get('basicSalary')), nationality: fd.get('nationality') },
       { onSuccess: () => { setDialogOpen(false); toast.success('Employee added'); }, onError: () => toast.error('Failed to add employee') },
     );
   };

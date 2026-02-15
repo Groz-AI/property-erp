@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { EmployeeEntity } from './entities/employee.entity';
 
 @Injectable()
@@ -8,6 +8,7 @@ export class HrService {
   constructor(
     @InjectRepository(EmployeeEntity)
     private readonly repo: Repository<EmployeeEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findAll(tenantId: string, filters?: { department?: string; isActive?: boolean }): Promise<EmployeeEntity[]> {
@@ -24,6 +25,25 @@ export class HrService {
   }
 
   async create(tenantId: string, data: Partial<EmployeeEntity>, userId: string): Promise<EmployeeEntity> {
+    // Auto-generate employee number if not provided
+    if (!data.employeeNumber) {
+      const [{ count }] = await this.dataSource.query(
+        `SELECT COUNT(*)::int AS count FROM employees WHERE tenant_id = $1`,
+        [tenantId],
+      );
+      data.employeeNumber = `EMP-${String(count + 1).padStart(4, '0')}`;
+    }
+
+    // Auto-resolve companyId from tenant's first company if not provided
+    if (!data.companyId) {
+      const [company] = await this.dataSource.query(
+        `SELECT id FROM companies WHERE tenant_id = $1 AND is_active = true ORDER BY created_at ASC LIMIT 1`,
+        [tenantId],
+      );
+      if (!company) throw new BadRequestException('No company found for this tenant. Create a company first.');
+      data.companyId = company.id;
+    }
+
     return this.repo.save(this.repo.create({ ...data, tenantId, createdBy: userId, updatedBy: userId }));
   }
 
