@@ -118,6 +118,35 @@ async function seed() {
     console.log('  ✅ Roles (10)');
 
     // ============================================================
+    // 4b. ASSIGN ROLES TO USERS
+    // ============================================================
+    const roleAssignments = [
+      { email: 'ahmad@groz.ae', role: 'Tenant Admin' },
+      { email: 'sarah@groz.ae', role: 'Sales Manager' },
+      { email: 'omar@groz.ae', role: 'Sales Agent' },
+      { email: 'fatima@groz.ae', role: 'Finance Manager' },
+      { email: 'david@groz.ae', role: 'Accountant' },
+      { email: 'layla@groz.ae', role: 'Cashier' },
+      { email: 'moh@groz.ae', role: 'Procurement Manager' },
+      { email: 'priya@groz.ae', role: 'Construction Manager' },
+      { email: 'james@groz.ae', role: 'Handover Officer' },
+      { email: 'nour@groz.ae', role: 'HR Manager' },
+      { email: 'rania@groz.ae', role: 'Sales Agent' },
+      { email: 'karim@groz.ae', role: 'Tenant Admin' },
+      { email: 'demo@grozai.net', role: 'Tenant Admin' },
+    ];
+    for (const ra of roleAssignments) {
+      await qr.query(`
+        INSERT INTO user_roles (user_id, role_id, company_id)
+        SELECT u.id, r.id, $3
+        FROM users u, roles r
+        WHERE u.email = $1 AND r.tenant_id = $2 AND r.name = $4
+        ON CONFLICT DO NOTHING
+      `, [ra.email, tenantId, comp1Id, ra.role]);
+    }
+    console.log('  ✅ User-Role assignments (13)');
+
+    // ============================================================
     // 5. CURRENCIES & TAX RULES
     // ============================================================
     await qr.query(`INSERT INTO currencies (tenant_id, code, name, symbol, decimal_places, is_default) VALUES ($1, 'EGP', 'Egyptian Pound', 'E£', 2, true) ON CONFLICT DO NOTHING`, [tenantId]);
