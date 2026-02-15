@@ -300,6 +300,19 @@ export function useCreateTenant() {
   });
 }
 
+export function useUpdateTenant() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const res = await platformApi.updateTenant(id, data);
+      return res.data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['platform'] });
+    },
+  });
+}
+
 export function useToggleTenantActive() {
   const qc = useQueryClient();
   return useMutation({

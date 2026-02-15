@@ -1,17 +1,30 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Plus, Power, PowerOff } from 'lucide-react';
+import { Building2, Plus, Power, PowerOff, Pencil, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/ui/page-header';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { FormDialog, FormField, FormInput, FormRow } from '@/components/ui/form-dialog';
-import { usePlatformTenants, useCreateTenant, useToggleTenantActive } from '@/hooks/useApi';
+import { usePlatformTenants, useCreateTenant, useToggleTenantActive, useUpdateTenant } from '@/hooks/useApi';
 
 export function TenantsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState<number>(10);
   const { data: tenants = [], isLoading } = usePlatformTenants() as { data: any[]; isLoading: boolean };
   const createTenant = useCreateTenant();
   const toggleActive = useToggleTenantActive();
+  const updateTenant = useUpdateTenant();
+
+  const saveMaxUsers = (id: string) => {
+    updateTenant.mutate(
+      { id, data: { maxUsers: editValue } },
+      {
+        onSuccess: () => { setEditingId(null); toast.success(`Max users updated to ${editValue}`); },
+        onError: () => toast.error('Failed to update max users'),
+      },
+    );
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,7 +121,39 @@ export function TenantsPage() {
                       </td>
                       <td className="px-5 py-3.5 font-mono text-xs text-muted-foreground">{t.slug}</td>
                       <td className="px-5 py-3.5"><StatusBadge status={t.isActive ? 'active' : 'inactive'} /></td>
-                      <td className="px-5 py-3.5 text-right">{t.usersCount}<span className="text-muted-foreground">/{t.maxUsers || '∞'}</span></td>
+                      <td className="px-5 py-3.5 text-right">
+                        {editingId === t.id ? (
+                          <div className="flex items-center justify-end gap-1">
+                            <span className="text-muted-foreground">{t.usersCount}/</span>
+                            <input
+                              type="number"
+                              min={1}
+                              max={10000}
+                              value={editValue}
+                              onChange={(e) => setEditValue(Number(e.target.value))}
+                              className="w-16 rounded-md border border-border/60 bg-background px-1.5 py-0.5 text-xs text-right focus:outline-none focus:ring-2 focus:ring-primary/30"
+                              autoFocus
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') saveMaxUsers(t.id);
+                                if (e.key === 'Escape') setEditingId(null);
+                              }}
+                            />
+                            <button onClick={() => saveMaxUsers(t.id)} disabled={updateTenant.isPending} className="rounded p-0.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20" title="Save"><Check className="h-3 w-3" /></button>
+                            <button onClick={() => setEditingId(null)} className="rounded p-0.5 text-muted-foreground hover:bg-muted" title="Cancel"><X className="h-3 w-3" /></button>
+                          </div>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 group">
+                            {t.usersCount}<span className="text-muted-foreground">/{t.maxUsers || '∞'}</span>
+                            <button
+                              onClick={() => { setEditValue(t.maxUsers || 10); setEditingId(t.id); }}
+                              className="rounded p-0.5 text-muted-foreground/0 group-hover:text-muted-foreground/50 hover:!text-primary hover:bg-primary/5 transition-all"
+                              title="Edit max users"
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </button>
+                          </span>
+                        )}
+                      </td>
                       <td className="px-5 py-3.5 text-right">{t.projectsCount}</td>
                       <td className="px-5 py-3.5 text-right">{t.unitsCount}</td>
                       <td className="px-5 py-3.5 text-right font-semibold">EGP {Number(t.revenue || 0).toLocaleString()}</td>

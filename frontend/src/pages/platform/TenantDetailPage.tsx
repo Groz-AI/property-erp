@@ -1,13 +1,14 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Building2, Users, FileText, Home, DollarSign, ArrowLeft,
-  Power, PowerOff, Mail, Clock,
+  Power, PowerOff, Mail, Clock, Pencil, Check, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { StatCard } from '@/components/ui/stat-card';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { PageHeader } from '@/components/ui/page-header';
-import { usePlatformTenant, usePlatformTenantUsers, useToggleTenantActive, useToggleUserActive } from '@/hooks/useApi';
+import { usePlatformTenant, usePlatformTenantUsers, useToggleTenantActive, useToggleUserActive, useUpdateTenant } from '@/hooks/useApi';
 
 export function TenantDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +16,9 @@ export function TenantDetailPage() {
   const { data: users = [] } = usePlatformTenantUsers(id || '') as { data: any[] };
   const toggleTenant = useToggleTenantActive();
   const toggleUser = useToggleUserActive();
+  const updateTenant = useUpdateTenant();
+  const [editingMaxUsers, setEditingMaxUsers] = useState(false);
+  const [maxUsersValue, setMaxUsersValue] = useState<number>(0);
 
   if (isLoading || !tenant) {
     return (
@@ -93,7 +97,68 @@ export function TenantDetailPage() {
               <div className="flex justify-between"><span className="text-muted-foreground">ID</span><span className="font-mono text-xs">{tenant.id}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Slug</span><span className="font-mono">{tenant.slug}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Domain</span><span>{tenant.domain || '—'}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Max Users</span><span className="font-semibold">{tenant.maxUsers || '∞'}</span></div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Max Users</span>
+                {editingMaxUsers ? (
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="number"
+                      min={1}
+                      max={10000}
+                      value={maxUsersValue}
+                      onChange={(e) => setMaxUsersValue(Number(e.target.value))}
+                      className="w-20 rounded-lg border border-border/60 bg-background px-2 py-1 text-sm text-right focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          updateTenant.mutate(
+                            { id: tenant.id, data: { maxUsers: maxUsersValue } },
+                            {
+                              onSuccess: () => { setEditingMaxUsers(false); toast.success(`Max users updated to ${maxUsersValue}`); },
+                              onError: () => toast.error('Failed to update max users'),
+                            },
+                          );
+                        }
+                        if (e.key === 'Escape') setEditingMaxUsers(false);
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        updateTenant.mutate(
+                          { id: tenant.id, data: { maxUsers: maxUsersValue } },
+                          {
+                            onSuccess: () => { setEditingMaxUsers(false); toast.success(`Max users updated to ${maxUsersValue}`); },
+                            onError: () => toast.error('Failed to update max users'),
+                          },
+                        );
+                      }}
+                      disabled={updateTenant.isPending}
+                      className="rounded-md p-1 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-colors"
+                      title="Save"
+                    >
+                      <Check className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setEditingMaxUsers(false)}
+                      className="rounded-md p-1 text-muted-foreground hover:bg-muted transition-colors"
+                      title="Cancel"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <span className="flex items-center gap-1.5">
+                    <span className="font-semibold">{tenant.maxUsers || '∞'}</span>
+                    <button
+                      onClick={() => { setMaxUsersValue(tenant.maxUsers || 10); setEditingMaxUsers(true); }}
+                      className="rounded-md p-1 text-muted-foreground/50 hover:text-primary hover:bg-primary/5 transition-colors"
+                      title="Edit max users"
+                    >
+                      <Pencil className="h-3 w-3" />
+                    </button>
+                  </span>
+                )}
+              </div>
               <div className="flex justify-between"><span className="text-muted-foreground">Created</span><span>{new Date(tenant.createdAt).toLocaleDateString()}</span></div>
             </div>
           </div>

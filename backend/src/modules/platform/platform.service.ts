@@ -209,10 +209,19 @@ export class PlatformService {
     return this.tenantRepo.save(tenant);
   }
 
-  async updateTenant(id: string, data: Partial<TenantEntity>): Promise<TenantEntity> {
+  async updateTenant(id: string, data: Partial<Pick<TenantEntity, 'name' | 'domain' | 'maxUsers' | 'settings'>>): Promise<TenantEntity> {
     const tenant = await this.tenantRepo.findOne({ where: { id } });
     if (!tenant) throw new NotFoundException('Tenant not found');
-    Object.assign(tenant, data);
+
+    const allowed: (keyof typeof data)[] = ['name', 'domain', 'maxUsers', 'settings'];
+    for (const key of allowed) {
+      if (data[key] !== undefined) (tenant as any)[key] = data[key];
+    }
+
+    if (tenant.maxUsers !== undefined && (tenant.maxUsers < 1 || tenant.maxUsers > 10000)) {
+      throw new ConflictException('maxUsers must be between 1 and 10,000');
+    }
+
     return this.tenantRepo.save(tenant);
   }
 
