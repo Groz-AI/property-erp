@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { VendorEntity } from './entities/vendor.entity';
 import { PurchaseOrderEntity } from './entities/purchase-order.entity';
 import { POStatus } from '../../shared/enums';
@@ -12,6 +12,7 @@ export class ProcurementService {
     private readonly vendorRepo: Repository<VendorEntity>,
     @InjectRepository(PurchaseOrderEntity)
     private readonly poRepo: Repository<PurchaseOrderEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   // Vendors
@@ -52,6 +53,20 @@ export class ProcurementService {
   }
 
   async createPO(tenantId: string, data: Partial<PurchaseOrderEntity>, userId: string): Promise<PurchaseOrderEntity> {
+    if (!data.poNumber) {
+      const [{ count }] = await this.dataSource.query(
+        `SELECT COUNT(*)::int AS count FROM purchase_orders WHERE tenant_id = $1`, [tenantId],
+      );
+      data.poNumber = `PO-${String(count + 1).padStart(4, '0')}`;
+    }
+    if (!data.companyId) {
+      const [company] = await this.dataSource.query(
+        `SELECT id FROM companies WHERE tenant_id = $1 AND is_active = true ORDER BY created_at ASC LIMIT 1`, [tenantId],
+      );
+      if (!company) throw new BadRequestException('No company found for this tenant.');
+      data.companyId = company.id;
+    }
+    if (!data.orderDate) data.orderDate = new Date();
     return this.poRepo.save(this.poRepo.create({ ...data, tenantId, createdBy: userId, updatedBy: userId }));
   }
 

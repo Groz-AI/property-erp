@@ -38,7 +38,7 @@ export function ProcurementPage() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     createPO.mutate(
-      { vendorId: fd.get('vendorId'), projectId: fd.get('projectId'), description: fd.get('description'), totalAmount: Number(fd.get('totalAmount')), expectedDelivery: fd.get('expectedDelivery') },
+      { vendorId: fd.get('vendorId'), projectId: fd.get('projectId') || undefined, description: fd.get('description'), totalAmount: Number(fd.get('totalAmount')), orderDate: new Date().toISOString().split('T')[0], deliveryDate: fd.get('expectedDelivery') || undefined },
       { onSuccess: () => { setDialogOpen(false); toast.success('Purchase order created'); }, onError: () => toast.error('Failed to create PO') },
     );
   };

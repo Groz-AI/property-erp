@@ -49,7 +49,7 @@ export function BrokersPage() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     createBroker.mutate(
-      { name: fd.get('name'), company: fd.get('company'), email: fd.get('email'), phone: fd.get('phone'), licenseNumber: fd.get('licenseNumber'), commissionMethod: fd.get('commissionMethod'), commissionRate: Number(fd.get('commissionRate') || 0) },
+      { name: fd.get('name'), companyName: fd.get('company'), email: fd.get('email'), phone: fd.get('phone'), licenseNumber: fd.get('licenseNumber'), commissionMethod: fd.get('commissionMethod'), commissionRate: Number(fd.get('commissionRate') || 0) },
       { onSuccess: () => { setDialogOpen(false); toast.success('Broker created successfully'); }, onError: () => toast.error('Failed to create broker') },
     );
   };

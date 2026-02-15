@@ -49,10 +49,11 @@ export function ProjectsPage() {
       {
         code: fd.get('code'),
         name: fd.get('name'),
-        location: fd.get('location'),
+        locationAddress: fd.get('location'),
         startDate: fd.get('startDate'),
-        expectedCompletion: fd.get('expectedCompletion'),
-        status: fd.get('status') || 'draft',
+        expectedEndDate: fd.get('expectedCompletion'),
+        companyId: fd.get('companyId') || undefined,
+        isActive: fd.get('status') === 'active',
         description: fd.get('description'),
       },
       {

@@ -59,7 +59,7 @@ export function BookingsPage() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     createBooking.mutate(
-      { projectId: fd.get('projectId'), unitId: fd.get('unitId'), customerId: fd.get('customerId'), netPrice: Number(fd.get('netPrice')), bookingFee: Number(fd.get('bookingFee')), discountPct: Number(fd.get('discountPct') || 0), validUntil: fd.get('validUntil'), feeType: fd.get('feeType') },
+      { projectId: fd.get('projectId'), unitId: fd.get('unitId'), customerId: fd.get('customerId'), netPrice: Number(fd.get('netPrice')), bookingFee: Number(fd.get('bookingFee')), discountPct: Number(fd.get('discountPct') || 0), validUntil: fd.get('validUntil'), bookingFeeType: fd.get('feeType') },
       { onSuccess: () => { setDialogOpen(false); toast.success(t('bookings.add') + ' ✓'); }, onError: () => toast.error('Failed to create booking') },
     );
   };

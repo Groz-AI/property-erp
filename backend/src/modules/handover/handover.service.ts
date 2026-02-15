@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { HandoverEntity } from './entities/handover.entity';
 import { HandoverStatus } from '../../shared/enums';
 
@@ -9,6 +9,7 @@ export class HandoverService {
   constructor(
     @InjectRepository(HandoverEntity)
     private readonly repo: Repository<HandoverEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findAll(tenantId: string, filters?: { status?: HandoverStatus }): Promise<HandoverEntity[]> {
@@ -24,6 +25,12 @@ export class HandoverService {
   }
 
   async create(tenantId: string, data: Partial<HandoverEntity>, userId: string): Promise<HandoverEntity> {
+    if (!data.handoverNumber) {
+      const [{ count }] = await this.dataSource.query(
+        `SELECT COUNT(*)::int AS count FROM handovers WHERE tenant_id = $1`, [tenantId],
+      );
+      data.handoverNumber = `HO-${String(count + 1).padStart(4, '0')}`;
+    }
     return this.repo.save(this.repo.create({ ...data, tenantId, createdBy: userId, updatedBy: userId }));
   }
 

@@ -39,7 +39,15 @@ export function PayrollPage() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     createPayslip.mutate(
-      { employeeId: fd.get('employeeId'), period: fd.get('period'), basicSalary: Number(fd.get('basicSalary')), housingAllowance: Number(fd.get('housingAllowance') || 0), transportAllowance: Number(fd.get('transportAllowance') || 0), otherDeductions: Number(fd.get('otherDeductions') || 0) },
+      {
+        employeeId: fd.get('employeeId'),
+        periodMonth: fd.get('period') ? new Date(fd.get('period') + '-01').getMonth() + 1 : undefined,
+        periodYear: fd.get('period') ? new Date(fd.get('period') + '-01').getFullYear() : undefined,
+        basicSalary: Number(fd.get('basicSalary')),
+        housingAllowance: Number(fd.get('housingAllowance') || 0),
+        transportAllowance: Number(fd.get('transportAllowance') || 0),
+        deductions: Number(fd.get('otherDeductions') || 0),
+      },
       { onSuccess: () => { setDialogOpen(false); toast.success('Payslip created'); }, onError: () => toast.error('Failed to create payslip') },
     );
   };

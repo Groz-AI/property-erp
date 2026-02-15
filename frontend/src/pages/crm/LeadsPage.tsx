@@ -59,7 +59,7 @@ export function LeadsPage() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     createLead.mutate(
-      { name: fd.get('name'), email: fd.get('email'), phone: fd.get('phone'), source: fd.get('source'), projectInterest: fd.get('projectInterest'), assignedTo: fd.get('assignedTo'), notes: fd.get('notes') },
+      { firstName: (fd.get('name') as string)?.split(' ')[0] || '', lastName: (fd.get('name') as string)?.split(' ').slice(1).join(' ') || '', email: fd.get('email'), phone: fd.get('phone'), source: fd.get('source'), notes: fd.get('notes') },
       { onSuccess: () => { setDialogOpen(false); toast.success(t('leads.add') + ' ✓'); }, onError: () => toast.error('Failed to create lead') },
     );
   };

@@ -47,7 +47,7 @@ export function ReceiptsPage() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     createReceipt.mutate(
-      { receipt: { contractId: fd.get('contractId'), amount: Number(fd.get('amount')), receiptDate: fd.get('receiptDate'), paymentMethod: fd.get('paymentMethod'), referenceNumber: fd.get('referenceNumber'), bankAccountId: fd.get('bankAccountId'), notes: fd.get('notes') }, allocations: [] },
+      { receipt: { contractId: fd.get('contractId'), amount: Number(fd.get('amount')), paymentDate: fd.get('receiptDate'), paymentMethod: fd.get('paymentMethod'), referenceNumber: fd.get('referenceNumber'), bankAccountId: fd.get('bankAccountId') || undefined, notes: fd.get('notes') }, allocations: [] },
       { onSuccess: () => { setDialogOpen(false); toast.success(t('receipts.add') + ' ✓'); }, onError: () => toast.error('Failed to create receipt') },
     );
   };

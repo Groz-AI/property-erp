@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { ProjectEntity } from '../entities/project.entity';
 
 @Injectable()
@@ -8,6 +8,7 @@ export class ProjectsService {
   constructor(
     @InjectRepository(ProjectEntity)
     private readonly repo: Repository<ProjectEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findAll(tenantId: string): Promise<ProjectEntity[]> {
@@ -28,6 +29,13 @@ export class ProjectsService {
   }
 
   async create(tenantId: string, data: Partial<ProjectEntity>, userId: string): Promise<ProjectEntity> {
+    if (!data.companyId) {
+      const [company] = await this.dataSource.query(
+        `SELECT id FROM companies WHERE tenant_id = $1 AND is_active = true ORDER BY created_at ASC LIMIT 1`, [tenantId],
+      );
+      if (!company) throw new BadRequestException('No company found for this tenant.');
+      data.companyId = company.id;
+    }
     const entity = this.repo.create({ ...data, tenantId, createdBy: userId, updatedBy: userId });
     return this.repo.save(entity);
   }
