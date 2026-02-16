@@ -156,7 +156,16 @@ export class PlatformService {
         );
       }
 
-      // 4. Create default chart of accounts
+      // 4. Assign "Tenant Admin" role to the admin user
+      await manager.query(
+        `INSERT INTO user_roles (user_id, role_id)
+         SELECT $1, r.id FROM roles r
+         WHERE r.tenant_id = $2 AND r.name = 'Tenant Admin'
+         ON CONFLICT DO NOTHING`,
+        [adminUser.id, savedTenant.id],
+      );
+
+      // 5. Create default chart of accounts
       const defaultCoa = [
         ['1000', 'Assets', 'asset', true],
         ['1100', 'Current Assets', 'asset', true],
