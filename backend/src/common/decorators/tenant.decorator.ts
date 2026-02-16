@@ -3,7 +3,7 @@ import { createParamDecorator, ExecutionContext, SetMetadata } from '@nestjs/com
 export const CurrentTenant = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): string => {
     const request = ctx.switchToHttp().getRequest();
-    return request.tenantId;
+    return request.tenantId || request.user?.tenantId;
   },
 );
 
