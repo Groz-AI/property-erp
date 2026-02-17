@@ -21,14 +21,14 @@ export class ReportsService {
 
   async getCollectionsReport(tenantId: string, filters?: { from?: string; to?: string }): Promise<any> {
     const qb = this.dataSource.createQueryBuilder()
-      .select('DATE_TRUNC(\'month\', r.receipt_date)', 'month')
+      .select('DATE_TRUNC(\'month\', r.payment_date)', 'month')
       .addSelect('SUM(r.amount)', 'collected')
       .addSelect('COUNT(r.id)', 'receipts')
       .from('receipts', 'r')
       .where('r.tenant_id = :tenantId', { tenantId })
       .andWhere('r.status = :status', { status: 'confirmed' });
-    if (filters?.from) qb.andWhere('r.receipt_date >= :from', { from: filters.from });
-    if (filters?.to) qb.andWhere('r.receipt_date <= :to', { to: filters.to });
+    if (filters?.from) qb.andWhere('r.payment_date >= :from', { from: filters.from });
+    if (filters?.to) qb.andWhere('r.payment_date <= :to', { to: filters.to });
     return qb.groupBy('month').orderBy('month', 'ASC').getRawMany();
   }
 
