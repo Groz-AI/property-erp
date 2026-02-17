@@ -1,6 +1,6 @@
-﻿import { Injectable, NotFoundException } from '@nestjs/common';
+﻿import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { FixedAssetEntity } from './entities/fixed-asset.entity';
 
 @Injectable()
@@ -8,6 +8,7 @@ export class FixedAssetsService {
   constructor(
     @InjectRepository(FixedAssetEntity)
     private readonly repo: Repository<FixedAssetEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findAll(tenantId: string, filters?: { category?: string; status?: string }): Promise<FixedAssetEntity[]> {
@@ -24,7 +25,20 @@ export class FixedAssetsService {
   }
 
   async create(tenantId: string, dto: Partial<FixedAssetEntity>): Promise<FixedAssetEntity> {
-    const entity = this.repo.create({ ...dto, tenantId, netBookValue: dto.purchaseCost });
+    if (!dto.companyId) {
+      const [company] = await this.dataSource.query(
+        `SELECT id FROM companies WHERE tenant_id = $1 AND is_active = true ORDER BY created_at LIMIT 1`, [tenantId],
+      );
+      if (!company) throw new BadRequestException('No active company found for this tenant');
+      dto.companyId = company.id;
+    }
+    if (!dto.assetCode) {
+      const [{ count }] = await this.dataSource.query(
+        `SELECT COUNT(*)::int AS count FROM fixed_assets WHERE tenant_id = $1`, [tenantId],
+      );
+      dto.assetCode = `FA-${String(count + 1).padStart(5, '0')}`;
+    }
+    const entity = this.repo.create({ ...dto, tenantId, netBookValue: dto.purchaseCost ?? 0 });
     return this.repo.save(entity);
   }
 

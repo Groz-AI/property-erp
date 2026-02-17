@@ -17,24 +17,6 @@ export class ContractorsController {
     return { data: await this.service.findAllContractors(tenantId) };
   }
 
-  @Get(':id')
-  @RequirePermissions('contractors:read')
-  async getContractor(@CurrentTenant() tenantId: string, @Param('id', ParseUUIDPipe) id: string) {
-    return { data: await this.service.findOneContractor(tenantId, id) };
-  }
-
-  @Post()
-  @RequirePermissions('contractors:create')
-  async createContractor(@CurrentTenant() tenantId: string, @CurrentUser('id') userId: string, @Body() body: any) {
-    return { data: await this.service.createContractor(tenantId, body, userId) };
-  }
-
-  @Patch(':id')
-  @RequirePermissions('contractors:update')
-  async updateContractor(@CurrentTenant() tenantId: string, @CurrentUser('id') userId: string, @Param('id', ParseUUIDPipe) id: string, @Body() body: any) {
-    return { data: await this.service.updateContractor(tenantId, id, body, userId) };
-  }
-
   @Get('claims')
   @RequirePermissions('claims:read')
   @ApiOperation({ summary: 'List progress claims' })
@@ -60,5 +42,23 @@ export class ContractorsController {
   @RequirePermissions('claims:update')
   async updateClaim(@CurrentTenant() tenantId: string, @CurrentUser('id') userId: string, @Param('id', ParseUUIDPipe) id: string, @Body() body: any) {
     return { data: await this.service.updateClaim(tenantId, id, body, userId) };
+  }
+
+  @Get(':id')
+  @RequirePermissions('contractors:read')
+  async getContractor(@CurrentTenant() tenantId: string, @Param('id', ParseUUIDPipe) id: string) {
+    return { data: await this.service.findOneContractor(tenantId, id) };
+  }
+
+  @Post()
+  @RequirePermissions('contractors:create')
+  async createContractor(@CurrentTenant() tenantId: string, @CurrentUser('id') userId: string, @Body() body: any) {
+    return { data: await this.service.createContractor(tenantId, body, userId) };
+  }
+
+  @Patch(':id')
+  @RequirePermissions('contractors:update')
+  async updateContractor(@CurrentTenant() tenantId: string, @CurrentUser('id') userId: string, @Param('id', ParseUUIDPipe) id: string, @Body() body: any) {
+    return { data: await this.service.updateContractor(tenantId, id, body, userId) };
   }
 }
