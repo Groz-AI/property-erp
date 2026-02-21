@@ -34,7 +34,18 @@ const columns: Column<Employee>[] = [
 export function EmployeesPage() {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { data: employees = [], isLoading } = useEmployees() as { data: Employee[] | undefined; isLoading: boolean };
+  const { data: rawEmployees = [], isLoading } = useEmployees() as { data: any[] | undefined; isLoading: boolean };
+  const employees: Employee[] = rawEmployees.map((e: any) => ({
+    id: e.id,
+    employeeCode: e.employeeNumber || '',
+    name: `${e.firstName || ''} ${e.lastName || ''}`.trim(),
+    email: e.email || '',
+    department: e.department || '',
+    designation: e.jobTitle || '',
+    joinDate: e.hireDate ? new Date(e.hireDate).toLocaleDateString() : '',
+    basicSalary: e.basicSalary ? Number(e.basicSalary).toLocaleString() : '0',
+    status: e.isActive === false ? 'inactive' : 'active',
+  }));
   const createEmployee = useCreateEmployee();
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -49,8 +49,9 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
-  const config = statusConfig[status] || fallback;
-  const label = status.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  const safeStatus = status || 'unknown';
+  const config = statusConfig[safeStatus] || fallback;
+  const label = safeStatus.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${config.bg} ${config.text} ${className}`}>
