@@ -1,4 +1,8 @@
 services:
   postgres:
+    environment:
+      POSTGRES_PASSWORD: erp_local_dev
     ports:
       - "5433:5432"
+  redis:
+    command: redis-server --requirepass redis_local_dev

@@ -6,7 +6,7 @@ export class AddNotificationsTable1707600100000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS "notifications" (
-        "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+        "id" uuid NOT NULL DEFAULT gen_random_uuid(),
         "tenant_id" uuid NOT NULL,
         "user_id" uuid,
         "type" varchar(50) NOT NULL,

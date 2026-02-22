@@ -2,6 +2,8 @@ import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { InitialSchema1707600000000 } from './migrations/1707600000000-InitialSchema';
 import { AddNotificationsTable1707600100000 } from './migrations/1707600100000-AddNotificationsTable';
+import { AddEmployeesTable1707600200000 } from './migrations/1707600200000-AddEmployeesTable';
+import { AddAllMissingTables1707600300000 } from './migrations/1707600300000-AddAllMissingTables';
 
 dotenv.config({ path: '.env.local' });
 dotenv.config();
@@ -16,7 +18,12 @@ const dataSource = new DataSource({
   ssl: process.env.DB_SSL === 'true',
   synchronize: false,
   logging: ['query', 'error'],
-  migrations: [InitialSchema1707600000000, AddNotificationsTable1707600100000],
+  migrations: [
+    InitialSchema1707600000000,
+    AddNotificationsTable1707600100000,
+    AddEmployeesTable1707600200000,
+    AddAllMissingTables1707600300000,
+  ],
 });
 
 async function runMigrations() {

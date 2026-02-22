@@ -45,14 +45,20 @@ export function ProjectsPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
+    
+    // Get the company ID from the user's current session or active tenant
+    // For local dev/demo, we can fetch companies or just let the backend auto-resolve it
+    // The backend now auto-resolves companyId if not provided (from our previous fixes)
+    
     createProject.mutate(
       {
         code: fd.get('code'),
         name: fd.get('name'),
-        locationAddress: fd.get('location'),
+        locationCity: fd.get('location'), // API expects locationCity
         startDate: fd.get('startDate'),
         expectedEndDate: fd.get('expectedCompletion'),
         companyId: fd.get('companyId') || undefined,
+        type: fd.get('type') || 'residential', // API expects type
         isActive: fd.get('status') === 'active',
         description: fd.get('description'),
       },
@@ -105,10 +111,11 @@ export function ProjectsPage() {
           </FormField>
         </FormRow>
         <FormRow>
-          <FormField label="Company" required>
-            <FormSelect name="companyId" required>
-              <option value="">Select company</option>
-              <option value="comp-1">Groz Properties LLC</option>
+          <FormField label="Type" required>
+            <FormSelect name="type" required>
+              <option value="residential">Residential</option>
+              <option value="commercial">Commercial</option>
+              <option value="mixed_use">Mixed Use</option>
             </FormSelect>
           </FormField>
           <FormField label="Status">
